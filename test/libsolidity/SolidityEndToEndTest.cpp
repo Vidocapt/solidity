@@ -13199,7 +13199,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_trivial)
 {
 	char const* sourceCode = R"(
 		contract C {
-			function f(bytes data) public pure returns (uint) {
+			function f(bytes memory data) public pure returns (uint) {
 				return abi.decode(data, (uint));
 			}
 		}
@@ -13212,7 +13212,7 @@ BOOST_AUTO_TEST_CASE(abi_encode_decode_simple)
 {
 	char const* sourceCode = R"XX(
 		contract C {
-			function f() public pure returns (uint, bytes) {
+			function f() public pure returns (uint, bytes memory) {
 				bytes memory arg = "abcdefg";
 				return abi.decode(abi.encode(uint(33), arg), (uint, bytes));
 			}
@@ -13229,7 +13229,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_simple)
 {
 	char const* sourceCode = R"(
 		contract C {
-			function f(bytes data) public pure returns (uint, bytes) {
+			function f(bytes memory data) public pure returns (uint, bytes memory) {
 				return abi.decode(data, (uint, bytes));
 			}
 		}
@@ -13270,7 +13270,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_simple_storage)
 	char const* sourceCode = R"(
 		contract C {
 			bytes data;
-			function f(bytes _data) public returns (uint, bytes) {
+			function f(bytes memory _data) public returns (uint, bytes memory) {
 				data = _data;
 				return abi.decode(data, (uint, bytes));
 			}
@@ -13313,7 +13313,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_calldata)
 {
 	char const* sourceCode = R"(
 		contract C {
-			function f(bytes calldata data) external pure returns (uint, bytes r) {
+			function f(bytes calldata data) external pure returns (uint, bytes memory r) {
 				return abi.decode(data, (uint, bytes));
 			}
 		}
