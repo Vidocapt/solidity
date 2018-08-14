@@ -13199,7 +13199,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_trivial)
 {
 	char const* sourceCode = R"(
 		contract C {
-			function f(bytes data) public view returns (uint) {
+			function f(bytes data) public pure returns (uint) {
 				return abi.decode(data, (uint));
 			}
 		}
@@ -13212,7 +13212,7 @@ BOOST_AUTO_TEST_CASE(abi_encode_decode_simple)
 {
 	char const* sourceCode = R"XX(
 		contract C {
-			function f() public view returns (uint, bytes) {
+			function f() public pure returns (uint, bytes) {
 				bytes memory arg = "abcdefg";
 				return abi.decode(abi.encode(uint(33), arg), (uint, bytes));
 			}
@@ -13229,7 +13229,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_simple)
 {
 	char const* sourceCode = R"(
 		contract C {
-			function f(bytes data) public view returns (uint, bytes) {
+			function f(bytes data) public pure returns (uint, bytes) {
 				return abi.decode(data, (uint, bytes));
 			}
 		}
@@ -13247,7 +13247,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_v2)
 		pragma experimental ABIEncoderV2;
 		contract C {
 			struct S { uint a; uint[] b; }
-			function f() public view returns (S memory) {
+			function f() public pure returns (S memory) {
 				S memory s;
 				s.a = 8;
 				s.b = new uint[](3);
@@ -13313,7 +13313,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_calldata)
 {
 	char const* sourceCode = R"(
 		contract C {
-			function f(bytes calldata data) external view returns (uint, bytes r) {
+			function f(bytes calldata data) external pure returns (uint, bytes r) {
 				return abi.decode(data, (uint, bytes));
 			}
 		}
@@ -13331,7 +13331,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_v2_calldata)
 		pragma experimental ABIEncoderV2;
 		contract C {
 			struct S { uint a; uint[] b; }
-			function f(bytes calldata data) external view returns (S memory) {
+			function f(bytes calldata data) external pure returns (S memory) {
 				return abi.decode(data, (S));
 			}
 		}
@@ -13347,7 +13347,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_static_array)
 {
 	char const* sourceCode = R"(
 		contract C {
-			function f(bytes calldata data) external view returns (uint[2][3] memory) {
+			function f(bytes calldata data) external pure returns (uint[2][3] memory) {
 				return abi.decode(data, (uint[2][3]));
 			}
 		}
@@ -13364,7 +13364,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_static_array_v2)
 	char const* sourceCode = R"(
 		pragma experimental ABIEncoderV2;
 		contract C {
-			function f(bytes calldata data) external view returns (uint[2][3] memory) {
+			function f(bytes calldata data) external pure returns (uint[2][3] memory) {
 				return abi.decode(data, (uint[2][3]));
 			}
 		}
@@ -13380,7 +13380,7 @@ BOOST_AUTO_TEST_CASE(abi_decode_dynamic_array)
 {
 	char const* sourceCode = R"(
 		contract C {
-			function f(bytes calldata data) external view returns (uint[] memory) {
+			function f(bytes calldata data) external pure returns (uint[] memory) {
 				return abi.decode(data, (uint[]));
 			}
 		}

@@ -1075,15 +1075,11 @@ bool ExpressionCompiler::visit(FunctionCall const& _functionCall)
 			arguments.front()->accept(*this);
 			TypePointer firstArgType = arguments.front()->annotation().type;
 			TypePointers const& targetTypes = dynamic_cast<TupleType const&>(*_functionCall.annotation().type).components();
-			if (*firstArgType == ArrayType(DataLocation::CallData))
-			{
-				solAssert(
-					*firstArgType == ArrayType(DataLocation::CallData) ||
-					*firstArgType == ArrayType(DataLocation::CallData, true),
-					""
-				);
+			if (
+				*firstArgType == ArrayType(DataLocation::CallData) ||
+				*firstArgType == ArrayType(DataLocation::CallData, true)
+			)
 				utils().abiDecode(targetTypes, false);
-			}
 			else
 			{
 				utils().convertType(*firstArgType, ArrayType(DataLocation::Memory));
