@@ -221,7 +221,12 @@ void ViewPureChecker::endVisit(InlineAssembly const& _inlineAssembly)
 	}(_inlineAssembly.operations());
 }
 
-void ViewPureChecker::reportMutability(StateMutability _mutability, SourceLocation const& _location, SourceLocation const& _nestedLocation)
+void ViewPureChecker::reportMutability(
+	StateMutability _mutability,
+	SourceLocation const& _location,
+	SourceLocation const& _nestedLocation,
+	bool _asPartOfModifierInvocation
+)
 {
 	if (m_currentFunction && m_currentFunction->stateMutability() < _mutability)
 	{
@@ -247,7 +252,8 @@ void ViewPureChecker::reportMutability(StateMutability _mutability, SourceLocati
 		}
 		else if (_mutability == StateMutability::Payable)
 		{
-			if (m_modifierInvocation)
+			// We do not warn for library functions because they cannot be payable anyway.
+			if (_asPartOfModifierInvocation && m_currentFunction->inContractKind() != ContractDefinition::ContractKind::Library)
 				m_errorReporter.warning(
 					_nestedLocation,
 					"Modifier used in non-payable function, but this expression requires the function to be payable.",
@@ -365,22 +371,16 @@ void ViewPureChecker::endVisit(IndexAccess const& _indexAccess)
 	}
 }
 
-bool ViewPureChecker::visit(ModifierInvocation const&)
-{
-	m_modifierInvocation = true;
-	return true;
-}
-
 void ViewPureChecker::endVisit(ModifierInvocation const& _modifier)
 {
 	solAssert(_modifier.name(), "");
 	if (ModifierDefinition const* mod = dynamic_cast<decltype(mod)>(_modifier.name()->annotation().referencedDeclaration))
 	{
 		solAssert(m_inferredMutability.count(mod), "");
-		reportMutability(m_inferredMutability.at(mod).mutability, _modifier.location(), m_inferredMutability.at(mod).location);
+		auto const& mutAndLocation = m_inferredMutability.at(mod);
+		reportMutability(mutAndLocation.mutability, _modifier.location(), mutAndLocation.location, true);
 	}
 	else
 		solAssert(dynamic_cast<ContractDefinition const*>(_modifier.name()->annotation().referencedDeclaration), "");
-	m_modifierInvocation = false;
 }
 
